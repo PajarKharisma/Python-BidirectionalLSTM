@@ -18,7 +18,11 @@ Before trained, dataset will pass preprocess. Preprocess will remove unnecessary
 ### How to install?
 1. Clone this project `git clone https://github.com/PajarKharisma/Python-BidirectionalLSTM.git`
 2. Install all requirements
-> type `pip install -r requirements.txt
+~~~
+type `pip install -r requirements.txt`
+~~~
 
 3. copy 'file/indonesian-sentimen' to
-> C:\\Users\\LiSA\\AppData\\Roaming\\nltk_data\\corpora\\stopwords\\
+~~~
+C:\\Users\\LiSA\\AppData\\Roaming\\nltk_data\\corpora\\stopwords\\
+~~~
