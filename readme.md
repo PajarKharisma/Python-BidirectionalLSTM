@@ -20,6 +20,6 @@ Before trained, dataset will pass preprocess. Preprocess will remove unnecessary
 
 2. Install all requirements. You can type `pip install -r requirements.txt` to install it.
 
-3. copy 'file/indonesian-sentimen' to `C:\\Users\\LiSA\\AppData\\Roaming\\nltk_data\\corpora\\stopwords\\`
+3. copy `file/indonesian-sentimen` to `C:\\Users\\LiSA\\AppData\\Roaming\\nltk_data\\corpora\\stopwords\\`
 
 4. For running, type `py main.py` inside src/main folder
