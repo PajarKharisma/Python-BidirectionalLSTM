@@ -9,6 +9,11 @@ Before trained, dataset will pass preprocess. Preprocess will remove unnecessary
 - Scikit-learn
 - Tensorflow
 - Keras
+<br><br>
+
+## Screenshot
+<img src="img/Figure_1.png">
+
 
 > copy file/indonesian-sentimen to
 ~~~
