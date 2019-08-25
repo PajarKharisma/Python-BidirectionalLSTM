@@ -2,7 +2,7 @@
 This program implementation lstm methode for classfication Sentiment-Analysis about hate speech and non hate speech in twitter. Dataset uses csv format file that contains collection of tweets about politics.  
 Before trained, dataset will pass preprocess. Preprocess will remove unnecessary word, separate label and data, and change dataset from string to numeric because training process only accept numeric format.  
 
-## Requirement
+### Requirement
 - Python 3
 - Numpy
 - Matplotlib
@@ -11,7 +11,7 @@ Before trained, dataset will pass preprocess. Preprocess will remove unnecessary
 - Keras
 <br><br>
 
-## Screenshot
+### Screenshot
 <img src="img/Figure_1.png">
 
 
