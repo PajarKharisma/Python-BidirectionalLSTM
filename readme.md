@@ -26,7 +26,7 @@ Before trained, dataset will pass preprocess. Preprocess will remove unnecessary
 <br><br>
 
 ### References
-- [https://machinelearningmastery.com/how-to-calculate-precision-recall-f1-and-more-for-deep-learning-models/]
-- [http://www.insightsbot.com/blog/1wAqZg/keras-lstm-example-sequence-binary-classification]
-- [https://machinelearningmastery.com/evaluate-performance-deep-learning-models-keras/]
-- [https://machinelearningmastery.com/sequence-classification-lstm-recurrent-neural-networks-python-keras/]
+- https://machinelearningmastery.com/how-to-calculate-precision-recall-f1-and-more-for-deep-learning-models/
+- http://www.insightsbot.com/blog/1wAqZg/keras-lstm-example-sequence-binary-classification
+- https://machinelearningmastery.com/evaluate-performance-deep-learning-models-keras/
+- https://machinelearningmastery.com/sequence-classification-lstm-recurrent-neural-networks-python-keras/
