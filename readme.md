@@ -24,7 +24,7 @@ Before trained, dataset will pass preprocess. Preprocess will remove unnecessary
     - `import nltk` enter.
     - `nltk.download('stopwords')` enter.
 
-4. copy `vocabulary/indonesian-sentimen` to `C:\\Users\\<username>\\AppData\\Roaming\\nltk_data\\corpora\\stopwords\\`
+4. copy `vocabulary/indonesian-sentimen` to `C:\\Users\\<computer username>\\AppData\\Roaming\\nltk_data\\corpora\\stopwords\\`
 
 5. For running, type `python main.py` inside src/main folder
 <br><br>
