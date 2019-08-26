@@ -21,8 +21,8 @@ Before trained, dataset will pass preprocess. Preprocess will remove unnecessary
 2. Install all requirements. You can type `pip install -r requirements.txt` to install it.
 
 3. Enter to python command line and type :
-    - `import nltk` <enter>.
-    - `nltk.download('stopwords')` <enter>.
+    - `import nltk` enter.
+    - `nltk.download('stopwords')` enter.
 
 4. copy `vocabulary/indonesian-sentimen` to `C:\\Users\\<username>\\AppData\\Roaming\\nltk_data\\corpora\\stopwords\\`
 
