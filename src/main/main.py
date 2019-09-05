@@ -32,7 +32,7 @@ def crossValidation(TOP_WORDS, dataInput):
     Y = np.array(Y)
 
     # pad Sentences with Keras
-    maxDataLenght = 30 
+    maxDataLenght = 30
     X = sequence.pad_sequences(X, maxlen=maxDataLenght)
 
     # set k value for cross validation
@@ -106,7 +106,7 @@ def crossValidation(TOP_WORDS, dataInput):
 
 def splitValidation(TOP_WORDS, dataInput):
     # split dataset for train and test
-    train, test = train_test_split(dataInput, test_size=0.1)
+    train, test = train_test_split(dataInput, test_size=0.2)
     xTrain, yTrain = list(zip(*train))
     xTest, yTest = list(zip(*test))
 
@@ -130,7 +130,7 @@ def splitValidation(TOP_WORDS, dataInput):
     print(model.summary())
 
     # split validation
-    model.fit(xTrain, yTrain, validation_data=(xTest, yTest), epochs=10, batch_size=64)
+    hst = model.fit(xTrain, yTrain, validation_data=(xTest, yTest), epochs=10, batch_size=64, callbacks=[checkpointer])
 
 def main():
     # load dataset and store it to list
@@ -143,6 +143,7 @@ def main():
     # give label to every data. 1 for positive and 0 for negative
     dataLabeled = list(zip(posData, np.ones(len(posData))))
     dataLabeled.extend(list(zip(negData, np.zeros(len(negData)))))
+    print(posData[0])
 
     # bag of words process. Give value to everu word
     TOP_WORDS = 500
