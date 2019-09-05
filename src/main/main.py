@@ -126,11 +126,44 @@ def splitValidation(TOP_WORDS, dataInput):
     model.add(Embedding(TOP_WORDS, embeddingVectorLength, input_length=maxDataLenght))
     model.add(LSTM(100))
     model.add(Dense(1, activation='sigmoid'))
-    model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
+    model.compile(loss='binary_crossentropy', optimizer='adam', metrics=[
+            'accuracy',
+            cm.f1_m,
+            cm.precision_m,
+            cm.recall_m
+        ])
     print(model.summary())
 
     # split validation
-    hst = model.fit(xTrain, yTrain, validation_data=(xTest, yTest), epochs=10, batch_size=64, callbacks=[checkpointer])
+    hst = model.fit(xTrain, yTrain, validation_data=(xTest, yTest), epochs=10, batch_size=64)
+
+    plt.style.use('classic')
+    fig, axs = plt.subplots(2, 2, gridspec_kw={'hspace': 0.5, 'wspace': 0.5})
+
+    fig.suptitle('Result Data')
+    (ax1, ax2), (ax3, ax4) = axs
+
+    ax1.plot(hst.history['acc'], label='train')
+    ax1.plot(hst.history['val_acc'], label='validation')
+    ax1.set_xlabel('Accuracy')
+    ax1.legend()
+
+    ax2.plot(hst.history['f1_m'], label='train')
+    ax2.plot(hst.history['val_f1_m'], label='validation')
+    ax2.set_xlabel('F Measurement')
+    ax2.legend()
+
+    ax3.plot(hst.history['precision_m'], label='train')
+    ax3.plot(hst.history['val_precision_m'], label='validation')
+    ax3.set_xlabel('Precision')
+    ax3.legend()
+
+    ax4.plot(hst.history['recall_m'], label='train')
+    ax4.plot(hst.history['val_recall_m'], label='validation')
+    ax4.set_xlabel('Recall')
+    ax4.legend()
+
+    plt.show()
 
 def main():
     # load dataset and store it to list
@@ -156,8 +189,8 @@ def main():
     dataInt = vocab.TransformSentencesToId(datas)
     dataLabeledInt = list(zip(dataInt, labels))
 
-    crossValidation(TOP_WORDS, dataLabeledInt)
-    # splitValidation(TOP_WORDS, dataLabeledInt)
+    # crossValidation(TOP_WORDS, dataLabeledInt)
+    splitValidation(TOP_WORDS, dataLabeledInt)
 
 def testData():
     dataset = np.loadtxt('../../input/coba.csv', delimiter=",")
