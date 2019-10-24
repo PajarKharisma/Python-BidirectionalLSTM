@@ -1,3 +1,4 @@
 .venv/
 .vscode/
 test/
+vocabulary/w2v
