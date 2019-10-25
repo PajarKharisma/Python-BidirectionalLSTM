@@ -9,6 +9,7 @@ Before trained, dataset will pass preprocess. Preprocess will remove unnecessary
 - Scikit-learn
 - Tensorflow
 - Keras
+- Gensim
 <br><br>
 
 ### Screenshot :
@@ -26,7 +27,9 @@ Before trained, dataset will pass preprocess. Preprocess will remove unnecessary
 
 4. copy `vocabulary/indonesian-sentimen` to `C:\\Users\\<username>\\AppData\\Roaming\\nltk_data\\corpora\\stopwords\\`
 
-5. For running, type `python main.py` inside src/main folder
+5. To get word embedding model, you can contact me `pajarkharisma@hotmail.com`
+
+6. For running, type `python main.py` inside src/main folder
 <br><br>
 
 ### References
@@ -34,3 +37,4 @@ Before trained, dataset will pass preprocess. Preprocess will remove unnecessary
 - http://www.insightsbot.com/blog/1wAqZg/keras-lstm-example-sequence-binary-classification
 - https://machinelearningmastery.com/evaluate-performance-deep-learning-models-keras/
 - https://machinelearningmastery.com/sequence-classification-lstm-recurrent-neural-networks-python-keras/
+- https://stackabuse.com/python-for-nlp-word-embeddings-for-deep-learning-in-keras/
