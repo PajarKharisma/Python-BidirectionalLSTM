@@ -4,14 +4,15 @@ import gensim
 import multiprocessing
 import numpy as np
 
-from gensim.models import Word2Vec
-from gensim.models import KeyedVectors
+from gensim.models import Word2Vec, KeyedVectors
 from gensim.models.word2vec import LineSentence
 from datetime import timedelta
 
 corpusPath = '../../vocabulary/w2v/idwiki-latest-pages-articles.xml.bz2'
 outputCorpus = '../../vocabulary/w2v/id-wiki.txt'
-modelPath = '../../vocabulary/w2v/CBOW/idwiki_word2vec_200.model'
+modelPath = '../../vocabulary/w2v/skipgram/idwiki_word2vec_200.bin'
+modelPathSg = '../../vocabulary/w2v/Skipgram/idwiki_word2vec_200.bin'
+modelPathCbow = '../../vocabulary/w2v/CBOW/idwiki_word2vec_200.bin'
 
 def word2vecfunc():
     # datas = [row.split(' ') for row in datas]
@@ -44,30 +45,59 @@ def createModel():
     start_time = time.time()
     print('Training Word2Vec Model...')
     sentences = LineSentence(outputCorpus)
-    id_w2v = Word2Vec(sentences, min_count=1, size= 200, workers=multiprocessing.cpu_count()-1, window=10, sg = 0)
+    model = Word2Vec(sentences, min_count=1, size=200, workers=multiprocessing.cpu_count()-1, window=5, sg=1)
+    model.init_sims(replace=True)
     # id_w2v = Word2Vec(sentences, size=200, workers=multiprocessing.cpu_count()-1)
-    id_w2v.save(modelPath)
+    model.wv.save_word2vec_format(modelPath, binary=True)
     finish_time = time.time()
 
     print('Finished. Elapsed time: {}'.format(timedelta(seconds=finish_time-start_time)))
 
+def compareValue():
+    modelSg = KeyedVectors.load_word2vec_format(modelPathSg, binary=True)
+    modelSg.init_sims(replace=True)
+
+    modelCbow = KeyedVectors.load_word2vec_format(modelPathCbow, binary=True)
+    modelCbow.init_sims(replace=True)
+
+    word1 = 'ayah'
+    word2 = 'bapak'
+    resultSg = modelSg.similarity(w1=word1, w2=word2)
+    resultCbow = modelCbow.similarity(w1=word1, w2=word2)
+
+    print('SG : \t', resultSg)
+    print('CBOW : \t', resultSg)
+
 def checkModel():
-    model = Word2Vec.load(modelPath)
+    model = KeyedVectors.load_word2vec_format(modelPath, binary=True)
+    model.init_sims(replace=True)
+    
     # cosmul = model.wv.most_similar(positive=['prabowo', 'presiden'], negative=['jokowi'])
-    # for i in cosmul:
-    #     print(i)
-    words = set(model.wv.vocab)
-    # print(words)
-    # print('Vocabulary size: %d' % len(words))
-    # vector = model.wv['debatfinal']
-    # print(np.mean(vector))
-    word = 'prabowo'
-    if word in words:
-        vector = model.wv[word]
-        print(vector)
-        print(len(vector))
-    else:
-        print('not exist')
+    
+    # print('Model : ', result)
+
+    # start_time = time.time()
+    # words = set(model.vocab)
+    # finish_time = time.time()
+    # print('Finished. Elapsed time: {}'.format(timedelta(seconds=finish_time-start_time)))
+    # word = 'debatfinalpilkadadki'
+
+    # try:
+    #     vector = model[word]
+    #     print(vector)
+    #     print(len(vector))
+    # except:
+    #     pass
+
+    # print('selesai')
+    # if word in words:
+    #     vector = model[word]
+    #     print(vector)
+    #     print(len(vector))
+    # else:
+    #     print('not exist')
 
 if __name__ == "__main__":
-    checkModel()
+    # checkModel()
+    # createModel()
+    compareValue()
