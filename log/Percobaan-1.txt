@@ -2,6 +2,7 @@
 Jumlah data NON_HS : 453
 Jumlah data HS : 260
 Jumlah semua data : 713
+Arsitektur Word2Vec : CBOW
 Metode : Bi-LSTM 1 Layer
 Jumlah Epoch : 20
 Jumlah Atribut : 3000
