@@ -39,7 +39,7 @@ sys.stderr = stderr
 
 inputPath = '../../input/data_input.csv'
 vocabPath = '../../vocabulary/corpus.json'
-modelPath = '../../vocabulary/w2v/Skipgram/idwiki_word2vec_200.bin'
+modelPath = '../../vocabulary/w2v/CBOW/idwiki_word2vec_200.bin'
 
 def nbMethod(dataInput, maxDataLenght):
     # split dataset for train and test
@@ -82,3 +82,28 @@ def svmMethod(dataInput, maxDataLenght):
     print("SVM Precission Score -> ", float("%.2f" % round(precision_score(predictions_SVM, yTest)*100, 2)))
     print("SVM Recall Score -> ", float("%.2f" % round(recall_score(predictions_SVM, yTest)*100, 2)))
     print("SVM F1 Measurement Score -> ", float("%.2f" % round(f1_score(predictions_SVM, yTest)*100, 2)))
+
+def main():
+    # load dataset and store it to list
+    posData, negData = rc.csv2array(inputPath)
+    print('Finish read data...')
+    # preprocess
+    posData = pp.getResult(posData)
+    negData = pp.getResult(negData)
+
+    # give label to every data. 1 for positive and 0 for negative
+    dataLabeled = list(zip(posData, np.ones(len(posData))))
+    dataLabeled.extend(list(zip(negData, np.zeros(len(negData)))))
+    datas, labels = zip(*dataLabeled)
+    maxDataLenght = pp.getMaxPad(datas)
+
+    dataInt = ce.getEmbeddingValue(modelPath, datas)
+    dataLabeledInt = list(zip(dataInt, labels))
+
+    start_time = time.time()
+    nbMethod(dataLabeledInt, maxDataLenght)
+    # svmMethod(NUM_OF_ATTRIBUTES, dataLabeledInt)
+
+    finish_time = time.time()
+
+    logFile += 'Finished. Elapsed time: {}'.format(timedelta(seconds=finish_time-start_time))

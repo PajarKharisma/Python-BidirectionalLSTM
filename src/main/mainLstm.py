@@ -22,9 +22,6 @@ import pandas as pd
 from datetime import timedelta
 from sklearn.model_selection import train_test_split
 from sklearn.model_selection import StratifiedKFold
-from sklearn import model_selection, naive_bayes, svm
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
-from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 
 from keras.models import load_model
 from keras.callbacks import ModelCheckpoint
