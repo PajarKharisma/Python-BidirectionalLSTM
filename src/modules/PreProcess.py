@@ -3,6 +3,9 @@ from nltk.corpus import stopwords
 import re
 from Sastrawi.Stemmer.StemmerFactory import StemmerFactory
 from nltk.tokenize import word_tokenize
+import pandas as pd
+
+slangwordsPath = '../../vocabulary/slangwords.csv'
 
 REPLACE_WITH_SPACE = re.compile("(<br\s*/><br\s*/>)|(\-)|(\/)|(\@)|(\\\)|(\.)|(\{)|(\})|(\_)|(\^)|(\|)|(\&)|(\%)|(\<)|(\>)|(\*)|(\~)")
 REPLACE_NO_SPACE = re.compile("(\#)|(\.)|(\;)|(\:)|(\!)|(\')|(\?)|(\,)|(\")|(\()|(\))|(\[)|(\])|(\@)|(\/)|(\\\)")
@@ -17,10 +20,13 @@ def getResult(reviews):
     factory = StemmerFactory()
     stemmer = factory.create_stemmer()
 
+    swCorpus = readSlangwords()
+
     reviews = [LINK.sub("", line.lower()) for line in reviews]
     reviews = [REPLACE_WITH_SPACE.sub(" ", line.lower()) for line in reviews]
     reviews = [REPLACE_NO_SPACE.sub("", line.lower()) for line in reviews]
     reviews = [removeDigit(line) for line in reviews]
+    reviews = [removeSlangwords(line, swCorpus) for line in reviews]
     # reviews = [stemming(line, stemmer) for line in reviews]
     reviews = [removeStopWords(line,stopwords) for line in reviews]
     reviews = [removeUnnecessary(line) for line in reviews]
@@ -41,7 +47,7 @@ def removeStopWords(line, stopwords):
     return " ".join(words)
 
 def removeLink(s):
-    corpus = ('https:', 'http:', '@', 'href')
+    corpus = ('https:', 'http:', '@', 'href', '#')
     l = s.split()
     i = 0
     while i < len(l):
@@ -71,3 +77,22 @@ def getMaxPad(data):
     longest_sentence = max(data, key=word_count)
     length_long_sentence = len(word_tokenize(longest_sentence))
     return length_long_sentence
+
+def removeSlangwords(s, corpus):
+    words = []
+    for word in s.split(" "):
+        word = word.strip()
+        if word in corpus:
+            word = corpus[word]
+        words.append(word)
+
+    return " ".join(words)
+        
+
+def readSlangwords():
+    slangwordsCorpus = {}
+    df = pd.read_csv(slangwordsPath, error_bad_lines=False)
+    for index, (key, value) in enumerate(zip(df['key'], df['value'])):
+        slangwordsCorpus[key] = value
+
+    return slangwordsCorpus
