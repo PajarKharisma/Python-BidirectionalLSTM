@@ -1,0 +1,15 @@
+SVM Accuracy Score ->  63.64
+SVM Precission Score ->  100.0
+SVM Recall Score ->  63.64
+SVM F1 Measurement Score ->  77.78
+=============================================
+Naive Bayes Accuracy Score ->  63.16
+Naive Bayes Precission Score ->  100.0
+Naive Bayes Recall Score ->  63.16
+Naive Bayes F1 Measurement Score ->  77.42
+=============================================
+RFDT Accuracy Score ->  59.44
+RFDT Precission Score ->  100.0
+RFDT Recall Score ->  59.44
+RFDT F1 Measurement Score ->  74.56
+=============================================
