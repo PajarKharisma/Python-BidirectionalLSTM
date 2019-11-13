@@ -454,49 +454,6 @@ def splitValidation(NUM_OF_ATTRIBUTES, dataInput):
     plt.show()
     plt.show()
 
-def nbMethod(NUM_OF_ATTRIBUTES, dataInput, maxDataLenght):
-    # split dataset for train and test
-    train, test = train_test_split(dataInput, test_size=0.2)
-    xTrain, yTrain = list(zip(*train))
-    xTest, yTest = list(zip(*test))
-
-    # convert label to vector
-    yTrain = np.array(yTrain)
-    yTest = np.array(yTest)
-
-    xTrain = sequence.pad_sequences(xTrain, maxlen=maxDataLenght) 
-    xTest = sequence.pad_sequences(xTest, maxlen=maxDataLenght)
-
-    Naive = naive_bayes.MultinomialNB()
-    Naive.fit(xTrain, yTrain)
-    predictions_NB = Naive.predict(xTrain)
-    print("Naive Bayes Accuracy Score -> ", float("%.2f" % round(accuracy_score(predictions_NB, yTrain)*100, 2)))
-    print("Naive Bayes Precission Score -> ", float("%.2f" % round(precision_score(predictions_NB, yTrain)*100, 2)))
-    print("Naive Bayes Recall Score -> ", float("%.2f" % round(recall_score(predictions_NB, yTrain)*100, 2)))
-    print("Naive Bayes F1 Measurement Score -> ", float("%.2f" % round(f1_score(predictions_NB, yTrain)*100, 2)))
-
-def svmMethod(NUM_OF_ATTRIBUTES, dataInput):
-    train, test = train_test_split(dataInput, test_size=0.2)
-    xTrain, yTrain = list(zip(*train))
-    xTest, yTest = list(zip(*test))
-
-    # convert label to vector
-    yTrain = np.array(yTrain)
-    yTest = np.array(yTest)
-
-    maxDataLenght = 30 
-    xTrain = sequence.pad_sequences(xTrain, maxlen=maxDataLenght) 
-    xTest = sequence.pad_sequences(xTest, maxlen=maxDataLenght)
-
-    SVM = svm.SVC(C=1.0, kernel='linear', degree=3, gamma='auto')
-    SVM.fit(xTrain, yTrain)
-    predictions_SVM = SVM.predict(xTest)
-    # Use accuracy_score function to get the accuracy
-    print("SVM Accuracy Score -> ", float("%.2f" % round(accuracy_score(predictions_SVM, yTest)*100, 2)))
-    print("SVM Precission Score -> ", float("%.2f" % round(precision_score(predictions_SVM, yTest)*100, 2)))
-    print("SVM Recall Score -> ", float("%.2f" % round(recall_score(predictions_SVM, yTest)*100, 2)))
-    print("SVM F1 Measurement Score -> ", float("%.2f" % round(f1_score(predictions_SVM, yTest)*100, 2)))
-
 def createModel(NUM_OF_ATTRIBUTES, dataInput):
     # split dataset for train and test
     train, test = train_test_split(dataInput, test_size=0.2)
