@@ -35,11 +35,36 @@ from numpy.linalg import norm
 sys.stderr = stderr
 # np.seterr(divide='ignore', invalid='ignore')
 
-inputPath = '../../input/data_input.csv'
+inputPath = '../../input/input.csv'
 vocabPath = '../../vocabulary/corpus.json'
 modelPath = '../../vocabulary/w2v/CBOW/idwiki_word2vec_200.bin'
+logPath = '../../log/'
 
 # Bidirectional LSTM 1 layer
+
+def check(TOP_WORDS, dataInput, embeddingMatrix):
+    seed = 7
+    np.random.seed(seed)
+
+    # split data and label
+    X, Y = list(zip(*dataInput))
+    Y = np.array(Y)
+
+    # pad Sentences with Keras
+    maxDataLenght = 30
+    X = sequence.pad_sequences(X, maxlen=maxDataLenght)
+
+    # set k value for cross validation
+    split = 10
+    kfold = StratifiedKFold(n_splits=split, shuffle=True, random_state=seed)
+   
+    # cross validation process
+    for train, test in kfold.split(X, Y):
+        print('='*30)
+        for i in X[test]:
+            print(i)
+        break;
+
 def crossValidation1(TOP_WORDS, dataInput, embeddingMatrix):
     seed = 7
     np.random.seed(seed)
@@ -61,12 +86,12 @@ def crossValidation1(TOP_WORDS, dataInput, embeddingMatrix):
 
     # cross validation process
     for train, test in kfold.split(X, Y):
-    #     # build model
+       # build model
         embeddingVectorLength = 200
         model = Sequential()
         model.add(Embedding(input_dim=TOP_WORDS, output_dim=embeddingVectorLength, weights=[embeddingMatrix], input_length=maxDataLenght, trainable=False))
         # model.add(Flatten())
-        model.add(Bidirectional(LSTM(100, return_sequences=False)))
+        model.add(Bidirectional(LSTM(100, return_sequences=False), merge_mode="sum"))
         model.add(Dropout(0.2))
         model.add(Dense(1, activation='sigmoid', kernel_regularizer=regularizers.l2(0.001)))
         model.compile(loss='binary_crossentropy', optimizer='adam', metrics=[
@@ -76,7 +101,7 @@ def crossValidation1(TOP_WORDS, dataInput, embeddingMatrix):
             cm.recall_m
         ])
         # print(model.summary())
-        model.fit(X[train], Y[train], validation_data=(X[test], Y[test]), epochs=20, batch_size=256, verbose=0)
+        model.fit(X[train], Y[train], epochs=10, batch_size=256, verbose=0)
         
         # evaluate the model
         # 1 = accuracy
@@ -84,7 +109,7 @@ def crossValidation1(TOP_WORDS, dataInput, embeddingMatrix):
         # 3 = precission
         # 4 = recall
         # model = load_model('model.weights.best.hdf5', custom_objects={'f1_m':cm.f1_m, 'precision_m':cm.precision_m, 'recall_m':cm.recall_m})
-        scores = model.evaluate(X[test], Y[test], verbose=0)
+        scores = model.evaluate(X[train], Y[train], verbose=0)
         for i in range(1,5):
             print("%s : %.2f%%" % (model.metrics_names[i], scores[i]*100))
             cvscores[i].append(scores[i]*100)
@@ -321,7 +346,7 @@ def splitValidation(TOP_WORDS, dataInput):
     model.add(Embedding(TOP_WORDS, embeddingVectorLength, input_length=maxDataLenght))
     model.add(Bidirectional(LSTM(100, return_sequences=False, dropout=0.25, recurrent_dropout=0.001)))
     model.add(Dense(1, activation='sigmoid', kernel_regularizer=regularizers.l2(0.1)))
-    model.compile(loss='binary_crossentropy', optimizer='rmsprop', metrics=[
+    model.compile(loss='binary_crossentropy', optimizer='adam', metrics=[
             'accuracy',
             cm.f1_m,
             cm.precision_m,
@@ -450,33 +475,53 @@ def createModel(TOP_WORDS, dataInput):
 def main():
     # load dataset and store it to list
     posData, negData = rc.csv2array(inputPath)
-
+    print('Finish read data...')
     # preprocess
     posData = pp.getResult(posData)
     negData = pp.getResult(negData)
+
+    print('Finish preprocess')
 
     # give label to every data. 1 for positive and 0 for negative
     dataLabeled = list(zip(posData, np.ones(len(posData))))
     dataLabeled.extend(list(zip(negData, np.zeros(len(negData)))))
 
-    TOP_WORDS = 300
+    TOP_WORDS = 2000
     datas, labels = zip(*dataLabeled)
+
+    # maxPad = pp.getMaxPad(datas)
+    # print(maxPad)
+    # return 0
+
     vocab = Vocabulary(TOP_WORDS, datas, vocabPath)
     vocab.prepareVocabulary()
     corpus = vocab.getVocab(vocabPath)
-
     dataInt = vocab.transformSentencesToId(datas, vocabPath)
+
+    from nltk.tokenize import word_tokenize
+
+    logFile = open(logPath+'log.txt', "w", encoding='utf-8')
+    for index, i in enumerate(datas):
+        if len(word_tokenize(i)) > 50:
+            result = str(index) + '|' + i + str(len(word_tokenize(i))) +'\n' 
+            logFile.write(result)
+    logFile.close()
+    
+    return 0
+
     dataLabeledInt = list(zip(dataInt, labels))
 
     embeddingMatrix = ce.createEmbeddingMatrix(modelPath, TOP_WORDS, corpus)
     # print(embeddingMatrix)
 
     start_time = time.time()
+    print('Start cross validation...')
 
     # 1 - Bidirectional LSTM 1 Layer
     # 2 - Bidirectional LSTM 3 Layer
     # 3 - LSTM 1 Layer
-    crossValidation3(TOP_WORDS, dataLabeledInt, embeddingMatrix)
+    check(TOP_WORDS, dataLabeledInt, embeddingMatrix)
+    # crossValidation1(TOP_WORDS, dataLabeledInt, embeddingMatrix)
     # splitValidation(TOP_WORDS, dataLabeledInt)
     # createModel(TOP_WORDS, dataLabeledInt)
     # nbMethod(TOP_WORDS, dataLabeledInt)

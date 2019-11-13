@@ -60,13 +60,13 @@ def compareValue():
     modelCbow = KeyedVectors.load_word2vec_format(modelPathCbow, binary=True)
     modelCbow.init_sims(replace=True)
 
-    word1 = 'ayah'
-    word2 = 'bapak'
+    word1 = 'jokowi'
+    word2 = 'presiden'
     resultSg = modelSg.similarity(w1=word1, w2=word2)
     resultCbow = modelCbow.similarity(w1=word1, w2=word2)
 
     print('SG : \t', resultSg)
-    print('CBOW : \t', resultSg)
+    print('CBOW : \t', resultCbow)
 
 def checkModel():
     model = KeyedVectors.load_word2vec_format(modelPath, binary=True)
