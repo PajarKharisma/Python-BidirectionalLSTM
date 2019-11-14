@@ -100,7 +100,6 @@ def crossValidation(dataInput, embeddingMatrix, maxDataLenght):
         cvscores.append([])
     
     for train, test in kfold.split(X, Y):
-        # build model
         model = biLstmModel1(embeddingMatrix, maxDataLenght)
         # print(model.summary())
         model.fit(X[train], Y[train], validation_data=(X[test], Y[test]), epochs=NUM_OF_EPOCHS, batch_size=256, verbose=0)
@@ -537,7 +536,6 @@ def main():
 
     dataLabeledInt = list(zip(dataInt, labels))
     embeddingMatrix = ce.createEmbeddingMatrix(modelPath, NUM_OF_ATTRIBUTES, corpus)
-
 
     start_time = time.time()
     print('Start cross validation...')
