@@ -22,11 +22,12 @@ from datetime import timedelta
 from sklearn.model_selection import train_test_split
 from sklearn.model_selection import StratifiedKFold
 
+from keras.utils import to_categorical
 from keras.models import load_model
 from keras.callbacks import ModelCheckpoint
 from keras.preprocessing import sequence
 from keras.models import Sequential
-from keras.layers import Dense, Activation, Embedding, LSTM, Bidirectional, Flatten, Dropout
+from keras.layers import Dense, Activation, Embedding, LSTM, Bidirectional, Flatten, Dropout, GRU
 from keras import regularizers
 # from gensim.models import Word2Vec, KeyedVectors
 from numpy import dot
@@ -44,12 +45,39 @@ logName = 'Percobaan-4.txt'
 NUM_OF_EPOCHS = 20
 NUM_OF_ATTRIBUTES = 2500
 NUM_OF_NEURONS = 150
+EMBEDDING_VECTOR_LENGTH = 200
 
 # Bidirectional LSTM 1 layer
-def gruModel(dataInput, embeddingMatrix, maxDataLenght):
-    pass
+def gruModel(embeddingMatrix, maxDataLenght):
+    model = Sequential()
+    model.add(Embedding(input_dim=NUM_OF_ATTRIBUTES, output_dim=embeddingVectorLength, weights=[embeddingMatrix], input_length=maxDataLenght, trainable=False))
+    model.add(GRU(NUM_OF_NEURONS, return_sequences = False))
+    model.add(Dropout(0.2))
+    model.add(Dense(1, activation='sigmoid', kernel_regularizer=regularizers.l2(0.001)))
+    model.compile(loss='binary_crossentropy', optimizer='adam', metrics=[
+        'accuracy',
+        km.binary_f1_score(),
+        km.binary_precision(),
+        km.binary_recall()
+    ])
     
+    return model
     
+def biLstmModel1(embeddingMatrix, maxDataLenght):
+    model = Sequential()
+    model.add(Embedding(input_dim=NUM_OF_ATTRIBUTES, output_dim=EMBEDDING_VECTOR_LENGTH, weights=[embeddingMatrix], input_length=maxDataLenght, trainable=False))
+    model.add(Bidirectional(LSTM(NUM_OF_NEURONS, return_sequences=False), merge_mode="sum"))
+    model.add(Dropout(0.2))
+    model.add(Dense(1, activation='sigmoid', kernel_regularizer=regularizers.l2(0.001)))
+    model.compile(loss='binary_crossentropy', optimizer='adam', metrics=[
+        'accuracy',
+        km.binary_f1_score(),
+        km.binary_precision(),
+        km.binary_recall()
+    ])
+
+    return model
+
 def crossValidation1(dataInput, embeddingMatrix, maxDataLenght):
     global logFile
     logFile += log.summaryLog(method='Bi-LSTM 1 Layer', numEpochs=NUM_OF_EPOCHS, numAttributes=NUM_OF_ATTRIBUTES, numNeurons=NUM_OF_NEURONS, sg=0) + '\n'
@@ -73,7 +101,7 @@ def crossValidation1(dataInput, embeddingMatrix, maxDataLenght):
 
     # cross validation process
     for train, test in kfold.split(X, Y):
-       # build model
+        # build model
         embeddingVectorLength = 200
         model = Sequential()
         model.add(Embedding(input_dim=NUM_OF_ATTRIBUTES, output_dim=embeddingVectorLength, weights=[embeddingMatrix], input_length=maxDataLenght, trainable=False))
