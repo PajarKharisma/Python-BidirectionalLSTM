@@ -224,7 +224,7 @@ def main():
     # 1 - Bidirectional LSTM 1 Layer
     # 2 - Bidirectional LSTM 3 Layer
     # 3 - LSTM 1 Layer
-    crossValidation1(dataLabeledInt, embeddingMatrix, maxDataLenght)
+    crossValidation(dataLabeledInt, embeddingMatrix, maxDataLenght)
 
     finish_time = time.time()
 
