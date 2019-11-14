@@ -79,7 +79,81 @@ def biLstmModel1(embeddingMatrix, maxDataLenght):
     return model
 
 def crossValidation(dataInput, embeddingMatrix, maxDataLenght):
-    pass
+    global logFile
+    logFile += log.summaryLog(method='Bi-LSTM 1 Layer', numEpochs=NUM_OF_EPOCHS, numAttributes=NUM_OF_ATTRIBUTES, numNeurons=NUM_OF_NEURONS, sg=0) + '\n'
+    logFile += '=' * 30 + '\n\n'
+    seed = 7
+    np.random.seed(seed)
+
+    # split data and label
+    X, Y = list(zip(*dataInput))
+    Y = np.array(Y)
+
+    # pad Sentences with Keras
+    X = sequence.pad_sequences(X, maxlen=maxDataLenght)
+
+    # set k value for cross validation
+    split = 10
+    kfold = StratifiedKFold(n_splits=split, shuffle=True, random_state=seed)
+    cvscores = []
+    for i in range(0,5):
+        cvscores.append([])
+    
+    for train, test in kfold.split(X, Y):
+        # build model
+        model = biLstmModel1(embeddingMatrix, maxDataLenght)
+        # print(model.summary())
+        model.fit(X[train], Y[train], validation_data=(X[test], Y[test]), epochs=NUM_OF_EPOCHS, batch_size=256, verbose=0)
+        
+        # evaluate the model
+        # 1 = accuracy
+        # 2 = f1_score
+        # 3 = precission
+        # 4 = recall
+        scores = model.evaluate(X[test], Y[test], verbose=0)
+        for i in range(1,5):
+            logFile += "%s : %.2f%%\n" % (model.metrics_names[i], scores[i]*100)
+            print("%s : %.2f%%" % (model.metrics_names[i], scores[i]*100))
+            cvscores[i].append(scores[i]*100)
+        logFile += '=' * 30 + '\n'
+        print("========================================================")
+
+    logFile += 'Mean : \n'
+    print("Mean : ")
+    for i in range(1,5):
+        metricName = ''
+        if i == 1:
+            metricName = 'acc'
+        elif i == 2:
+            metricName = 'f1_score'
+        elif i == 3:
+            metricName = 'precision'
+        elif i == 4:
+            metricName = 'recall'
+        logFile += "%s : %.2f%% (+/- %.2f%%)\n" % (metricName, np.mean(cvscores[i]), np.std(cvscores[i]))
+        print("%s : %.2f%% (+/- %.2f%%)" % (metricName, np.mean(cvscores[i]), np.std(cvscores[i])))
+
+    # show result to matplotlib
+    plt.style.use('classic')
+    fig, axs = plt.subplots(2, 2, gridspec_kw={'hspace': 0.5, 'wspace': 0.5})
+
+    iteration = [*range(1,11)]
+    fig.suptitle('Result Data')
+    (ax1, ax2), (ax3, ax4) = axs
+
+    ax1.plot(iteration, cvscores[1])
+    ax1.set_ylabel('Accuracy (%)')
+
+    ax2.plot(iteration, cvscores[2], 'tab:green')
+    ax2.set_ylabel('F1 Measurement (%)')
+
+    ax3.plot(iteration, cvscores[3], 'tab:orange')
+    ax3.set_ylabel('Precission (%)')
+
+    ax4.plot(iteration, cvscores[4], 'tab:red')
+    ax4.set_ylabel('Recall (%)')
+
+    plt.show()
 
 def crossValidation1(dataInput, embeddingMatrix, maxDataLenght):
     global logFile
@@ -125,7 +199,6 @@ def crossValidation1(dataInput, embeddingMatrix, maxDataLenght):
         # 2 = f1_score
         # 3 = precission
         # 4 = recall
-        # model = load_model('model.weights.best.hdf5', custom_objects={'f1_m':cm.f1_m, 'precision_m':cm.precision_m, 'recall_m':cm.recall_m})
         scores = model.evaluate(X[test], Y[test], verbose=0)
         for i in range(1,5):
             logFile += "%s : %.2f%%\n" % (model.metrics_names[i], scores[i]*100)
