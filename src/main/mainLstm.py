@@ -78,6 +78,9 @@ def biLstmModel1(embeddingMatrix, maxDataLenght):
 
     return model
 
+def crossValidation(dataInput, embeddingMatrix, maxDataLenght):
+    pass
+
 def crossValidation1(dataInput, embeddingMatrix, maxDataLenght):
     global logFile
     logFile += log.summaryLog(method='Bi-LSTM 1 Layer', numEpochs=NUM_OF_EPOCHS, numAttributes=NUM_OF_ATTRIBUTES, numNeurons=NUM_OF_NEURONS, sg=0) + '\n'
