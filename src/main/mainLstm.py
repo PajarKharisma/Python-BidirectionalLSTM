@@ -47,6 +47,7 @@ NUM_OF_NEURONS = 150
 
 # Bidirectional LSTM 1 layer
 def gruModel(dataInput, embeddingMatrix, maxDataLenght):
+    pass
     
     
 def crossValidation1(dataInput, embeddingMatrix, maxDataLenght):
