@@ -10,9 +10,10 @@ def createEmbeddingMatrix(modelPath, vocabLength, corpus):
 
     embedding_matrix = np.zeros((vocabLength, 200))
     for word, index in corpus.items():
-        if word in wordIndex:
-            embedding_vector = model[word]
-            embedding_matrix[index] = embedding_vector
+        if index < vocabLength:
+            if word in wordIndex:
+                embedding_vector = model[word]
+                embedding_matrix[index] = embedding_vector
 
     return embedding_matrix
 

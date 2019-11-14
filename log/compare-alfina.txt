@@ -13,3 +13,8 @@ RFDT Precission Score ->  100.0
 RFDT Recall Score ->  59.44
 RFDT F1 Measurement Score ->  74.56
 =============================================
+One hot encoding accuracy : 76.22%
+One hot encoding f1_score : 80.95%
+One hot encoding precision : 84.34%
+One hot encoding recall : 77.89%
+=============================================

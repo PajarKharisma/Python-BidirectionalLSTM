@@ -1,0 +1,68 @@
+================ SUMMARY ================
+Jumlah data NON_HS : 453
+Jumlah data HS : 436
+Jumlah semua data : 889
+Arsitektur Word2Vec : CBOW
+Metode : Bi-LSTM 1 Layer
+Jumlah Epoch : 20
+Jumlah Atribut : 2500
+Jumlah Neuron : 150
+
+==============================
+
+accuracy : 73.33%
+f1_score : 73.02%
+precision : 92.41%
+recall : 60.78%
+==============================
+accuracy : 74.44%
+f1_score : 74.98%
+precision : 90.22%
+recall : 64.72%
+==============================
+accuracy : 76.67%
+f1_score : 79.19%
+precision : 90.32%
+recall : 71.15%
+==============================
+accuracy : 80.90%
+f1_score : 85.60%
+precision : 89.88%
+recall : 82.34%
+==============================
+accuracy : 83.15%
+f1_score : 84.97%
+precision : 91.44%
+recall : 79.81%
+==============================
+accuracy : 78.65%
+f1_score : 86.57%
+precision : 89.29%
+recall : 84.86%
+==============================
+accuracy : 77.27%
+f1_score : 77.00%
+precision : 91.65%
+recall : 66.76%
+==============================
+accuracy : 71.59%
+f1_score : 73.17%
+precision : 88.64%
+recall : 63.19%
+==============================
+accuracy : 85.23%
+f1_score : 86.44%
+precision : 96.67%
+recall : 78.33%
+==============================
+accuracy : 77.27%
+f1_score : 80.56%
+precision : 90.32%
+recall : 73.29%
+==============================
+Mean : 
+acc : 77.85% (+/- 4.07%)
+f1_score : 80.15% (+/- 5.21%)
+precision : 91.08% (+/- 2.14%)
+recall : 72.52% (+/- 8.11%)
+Finished. Elapsed time: 0:10:21.403905

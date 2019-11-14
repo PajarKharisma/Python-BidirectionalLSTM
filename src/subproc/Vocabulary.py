@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 from sklearn.feature_extraction.text import CountVectorizer
 from keras.preprocessing.text import Tokenizer
+from keras.utils import to_categorical
 
 class NumpyEncoder(json.JSONEncoder):
     def default(self, obj):
@@ -22,12 +23,11 @@ class Vocabulary:
         self.__maxFeatures = maxFeatures
         self.__data = data
         self.__path = path
+        self.__wordTokenizer = Tokenizer(num_words=maxFeatures)
     
     def prepareVocabulary(self):
-        vectorizer = CountVectorizer(max_features=self.__maxFeatures)
-        vectorizer.fit(self.__data)
-        datajson = vectorizer.vocabulary_
-
+        self.__wordTokenizer.fit_on_texts(self.__data)
+        datajson = self.__wordTokenizer.word_index
         with open(self.__path, 'w') as fp:
             json.dump(datajson, fp, sort_keys=True, indent=4, cls=NumpyEncoder)
 
@@ -37,21 +37,27 @@ class Vocabulary:
         
         return self.input_word_index
 
-    def transformSentencesToId(self, sentences, path):
-        with open(path) as json_file:
-            self.input_word_index = json.load(json_file)
+    def transformSentencesToId(self):
+        return self.__wordTokenizer.texts_to_sequences(self.__data)
 
-        vectors = []
-        for r in sentences:
-            words = r.split(" ")
-            vector = np.zeros(len(words))
+    # def transformSentencesToId(self, sentences, path):
+    #     with open(path) as json_file:
+    #         self.input_word_index = json.load(json_file)
 
-            for t, word in enumerate(words):
-                if word in self.input_word_index:
-                    vector[t] = self.input_word_index[word]
-                else:
-                    pass
+    #     vectors = []
+    #     for r in sentences:
+    #         words = r.split(" ")
+    #         vector = np.zeros(len(words))
+
+    #         for t, word in enumerate(words):
+    #             if word in self.input_word_index:
+    #                 vector[t] = self.input_word_index[word]
+    #             else:
+    #                 pass
                 
-            vectors.append(vector)
+    #         vectors.append(vector)
             
-        return vectors
+    #     return vectors
+
+    def transformSentencesToOneHot(self, dataInt):
+        return [to_categorical(data) for data in dataInt]

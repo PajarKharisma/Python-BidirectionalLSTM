@@ -34,7 +34,7 @@ from numpy.linalg import norm
 sys.stderr = stderr
 # np.seterr(divide='ignore', invalid='ignore')
 
-inputPath = '../../input/data_input-Copy.csv'
+inputPath = '../../input/data_input.csv'
 vocabPath = '../../vocabulary/corpus.json'
 modelPath = '../../vocabulary/w2v/CBOW/idwiki_word2vec_200.bin'
 logPath = '../../log/'
@@ -46,9 +46,12 @@ NUM_OF_ATTRIBUTES = 2500
 NUM_OF_NEURONS = 150
 
 # Bidirectional LSTM 1 layer
+def gruModel(dataInput, embeddingMatrix, maxDataLenght):
+    
+    
 def crossValidation1(dataInput, embeddingMatrix, maxDataLenght):
     global logFile
-    logFile += log.summaryLog(method='Bi-LSTM 1 Layer', numEpochs=NUM_OF_EPOCHS, numAttributes=NUM_OF_ATTRIBUTES, numNeurons=NUM_OF_NEURONS, sg=1) + '\n'
+    logFile += log.summaryLog(method='Bi-LSTM 1 Layer', numEpochs=NUM_OF_EPOCHS, numAttributes=NUM_OF_ATTRIBUTES, numNeurons=NUM_OF_NEURONS, sg=0) + '\n'
     logFile += '=' * 30 + '\n\n'
     seed = 7
     np.random.seed(seed)
@@ -91,7 +94,7 @@ def crossValidation1(dataInput, embeddingMatrix, maxDataLenght):
         # 3 = precission
         # 4 = recall
         # model = load_model('model.weights.best.hdf5', custom_objects={'f1_m':cm.f1_m, 'precision_m':cm.precision_m, 'recall_m':cm.recall_m})
-        scores = model.evaluate(X[train], Y[train], verbose=0)
+        scores = model.evaluate(X[test], Y[test], verbose=0)
         for i in range(1,5):
             logFile += "%s : %.2f%%\n" % (model.metrics_names[i], scores[i]*100)
             print("%s : %.2f%%" % (model.metrics_names[i], scores[i]*100))
@@ -425,10 +428,9 @@ def main():
     vocab = Vocabulary(NUM_OF_ATTRIBUTES, datas, vocabPath)
     vocab.prepareVocabulary()
     corpus = vocab.getVocab(vocabPath)
-    dataInt = vocab.transformSentencesToId(datas, vocabPath)
+    dataInt = vocab.transformSentencesToId()
 
     dataLabeledInt = list(zip(dataInt, labels))
-
     embeddingMatrix = ce.createEmbeddingMatrix(modelPath, NUM_OF_ATTRIBUTES, corpus)
 
 
@@ -439,10 +441,6 @@ def main():
     # 2 - Bidirectional LSTM 3 Layer
     # 3 - LSTM 1 Layer
     crossValidation1(dataLabeledInt, embeddingMatrix, maxDataLenght)
-    # splitValidation(NUM_OF_ATTRIBUTES, dataLabeledInt)
-    # createModel(NUM_OF_ATTRIBUTES, dataLabeledInt)
-    # nbMethod(NUM_OF_ATTRIBUTES, dataLabeledInt)
-    # svmMethod(NUM_OF_ATTRIBUTES, dataLabeledInt)
 
     finish_time = time.time()
 
