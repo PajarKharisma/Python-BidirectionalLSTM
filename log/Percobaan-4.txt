@@ -4,65 +4,65 @@ Jumlah data HS : 436
 Jumlah semua data : 889
 Arsitektur Word2Vec : CBOW
 Metode : Bi-LSTM 1 Layer
-Jumlah Epoch : 20
+Jumlah Epoch : 3
 Jumlah Atribut : 2500
-Jumlah Neuron : 150
+Jumlah Neuron : 100
 
 ==============================
 
-accuracy : 73.33%
-f1_score : 73.02%
-precision : 92.41%
-recall : 60.78%
+accuracy : 71.11%
+f1_score : 85.39%
+precision : 87.45%
+recall : 84.65%
 ==============================
-accuracy : 74.44%
-f1_score : 74.98%
-precision : 90.22%
-recall : 64.72%
+accuracy : 64.44%
+f1_score : 67.84%
+precision : 89.47%
+recall : 55.39%
 ==============================
-accuracy : 76.67%
-f1_score : 79.19%
-precision : 90.32%
-recall : 71.15%
+accuracy : 72.22%
+f1_score : 81.19%
+precision : 88.44%
+recall : 76.13%
 ==============================
-accuracy : 80.90%
-f1_score : 85.60%
-precision : 89.88%
-recall : 82.34%
-==============================
-accuracy : 83.15%
-f1_score : 84.97%
-precision : 91.44%
-recall : 79.81%
+accuracy : 74.16%
+f1_score : 88.30%
+precision : 85.70%
+recall : 92.43%
 ==============================
 accuracy : 78.65%
-f1_score : 86.57%
-precision : 89.29%
+f1_score : 83.52%
+precision : 91.85%
+recall : 77.29%
+==============================
+accuracy : 68.54%
+f1_score : 60.12%
+precision : 92.38%
+recall : 45.09%
+==============================
+accuracy : 73.86%
+f1_score : 85.51%
+precision : 87.50%
 recall : 84.86%
 ==============================
 accuracy : 77.27%
-f1_score : 77.00%
-precision : 91.65%
-recall : 66.76%
+f1_score : 82.97%
+precision : 92.59%
+recall : 75.81%
 ==============================
-accuracy : 71.59%
-f1_score : 73.17%
-precision : 88.64%
-recall : 63.19%
+accuracy : 69.32%
+f1_score : 86.39%
+precision : 82.55%
+recall : 92.43%
 ==============================
-accuracy : 85.23%
-f1_score : 86.44%
-precision : 96.67%
-recall : 78.33%
-==============================
-accuracy : 77.27%
-f1_score : 80.56%
-precision : 90.32%
-recall : 73.29%
+accuracy : 63.64%
+f1_score : 71.89%
+precision : 84.02%
+recall : 64.24%
 ==============================
 Mean : 
-acc : 77.85% (+/- 4.07%)
-f1_score : 80.15% (+/- 5.21%)
-precision : 91.08% (+/- 2.14%)
-recall : 72.52% (+/- 8.11%)
-Finished. Elapsed time: 0:10:21.403905
+acc : 71.32% (+/- 4.72%)
+f1_score : 79.31% (+/- 8.92%)
+precision : 88.20% (+/- 3.29%)
+recall : 74.83% (+/- 14.83%)
+Finished. Elapsed time: 0:07:33.507569

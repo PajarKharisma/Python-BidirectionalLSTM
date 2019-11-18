@@ -36,21 +36,21 @@ from numpy.linalg import norm
 sys.stderr = stderr
 # np.seterr(divide='ignore', invalid='ignore')
 
-inputPath = '../../input/data_input.csv'
+inputPath = '../../input/data_input-Copy.csv'
 vocabPath = '../../vocabulary/corpus.json'
 modelPath = '../../vocabulary/w2v/CBOW/idwiki_word2vec_200.bin'
 logPath = '../../log/'
-logName = 'Percobaan-4.txt'
+logName = 'Percobaan-5.txt'
 
 # parameter yang diuji
 NUM_OF_EPOCHS = 20
 NUM_OF_ATTRIBUTES = 2500
-NUM_OF_NEURONS = 150
+NUM_OF_NEURONS = 200
 EMBEDDING_VECTOR_LENGTH = 200
 
 def crossValidation(dataInput, embeddingMatrix, maxDataLenght):
     global logFile
-    logFile += log.summaryLog(method='Bi-LSTM 1 Layer', numEpochs=NUM_OF_EPOCHS, numAttributes=NUM_OF_ATTRIBUTES, numNeurons=NUM_OF_NEURONS, sg=0) + '\n'
+    logFile += log.summaryLog(method='Bi-LSTM 3 Layer', numEpochs=NUM_OF_EPOCHS, numAttributes=NUM_OF_ATTRIBUTES, numNeurons=NUM_OF_NEURONS, sg=0) + '\n'
     logFile += '=' * 30 + '\n\n'
     seed = 7
     np.random.seed(seed)
@@ -70,7 +70,7 @@ def crossValidation(dataInput, embeddingMatrix, maxDataLenght):
         cvscores.append([])
     
     for train, test in kfold.split(X, Y):
-        model = lm.biLstmModel1(
+        model = lm.biLstmModel3(
             embeddingMatrix=embeddingMatrix,
             maxDataLenght=maxDataLenght,
             embeddingVectorLength=EMBEDDING_VECTOR_LENGTH,
@@ -78,14 +78,14 @@ def crossValidation(dataInput, embeddingMatrix, maxDataLenght):
             numNeurons=NUM_OF_NEURONS
         )
         # print(model.summary())
-        model.fit(X[train], Y[train], validation_data=(X[test], Y[test]), epochs=NUM_OF_EPOCHS, batch_size=256, verbose=0)
+        model.fit(X[train], Y[train], epochs=NUM_OF_EPOCHS, batch_size=256, verbose=0)
         
         # evaluate the model
         # 1 = accuracy
         # 2 = f1_score
         # 3 = precission
         # 4 = recall
-        scores = model.evaluate(X[test], Y[test], verbose=0)
+        scores = model.evaluate(X[train], Y[train], verbose=0)
         for i in range(1,5):
             logFile += "%s : %.2f%%\n" % (model.metrics_names[i], scores[i]*100)
             print("%s : %.2f%%" % (model.metrics_names[i], scores[i]*100))
