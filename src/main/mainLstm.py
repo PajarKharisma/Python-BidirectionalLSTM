@@ -9,6 +9,8 @@ sys.stderr = open(os.devnull, 'w')
 import modules.ReadCsv as rc
 import modules.PreProcess as pp
 import numpy as np
+np.set_printoptions(threshold=sys.maxsize)
+
 import subproc.CreateEmbedding as ce
 import subproc.Loging as log
 import model.ListOfModels as lm
@@ -40,7 +42,7 @@ inputPath = '../../input/data_input-Copy.csv'
 vocabPath = '../../vocabulary/corpus.json'
 modelPath = '../../vocabulary/w2v/CBOW/idwiki_word2vec_200.bin'
 logPath = '../../log/'
-logName = 'Percobaan-5.txt'
+logName = 'Uji valid.txt'
 
 # parameter yang diuji
 NUM_OF_EPOCHS = 20
@@ -70,7 +72,7 @@ def crossValidation(dataInput, embeddingMatrix, maxDataLenght):
         cvscores.append([])
     
     for train, test in kfold.split(X, Y):
-        model = lm.biLstmModel3(
+        model = lm.biLstmModel1(
             embeddingMatrix=embeddingMatrix,
             maxDataLenght=maxDataLenght,
             embeddingVectorLength=EMBEDDING_VECTOR_LENGTH,
@@ -85,7 +87,7 @@ def crossValidation(dataInput, embeddingMatrix, maxDataLenght):
         # 2 = f1_score
         # 3 = precission
         # 4 = recall
-        scores = model.evaluate(X[train], Y[train], verbose=0)
+        scores = model.evaluate(X[test], Y[test], verbose=0)
         for i in range(1,5):
             logFile += "%s : %.2f%%\n" % (model.metrics_names[i], scores[i]*100)
             print("%s : %.2f%%" % (model.metrics_names[i], scores[i]*100))
@@ -130,41 +132,46 @@ def crossValidation(dataInput, embeddingMatrix, maxDataLenght):
 
     plt.show()
 
-def splitValidation(NUM_OF_ATTRIBUTES, dataInput):
+def splitValidation(dataInput, embeddingMatrix, maxDataLenght):
     # split dataset for train and test
-    train, test = train_test_split(dataInput, test_size=0.1)
+    train, testVal = train_test_split(dataInput, test_size=0.3)
+    test, validation = train_test_split(testVal, test_size=0.5)
     xTrain, yTrain = list(zip(*train))
+    xValidation, yValidation = list(zip(*validation))
     xTest, yTest = list(zip(*test))
 
     # convert label to vector
     yTrain = np.array(yTrain)
     yTest = np.array(yTest)
+    yValidation = np.array(yValidation)
 
+    print('xtrain : ', len(xTrain), 'yTrain : ', len(yTrain))
+    print('xValidation : ', len(xValidation), 'yValidation : ', len(yValidation))
+    print('xTest : ', len(xTest), 'yTest : ', len(yTest))
+    # return 0
 
     # pad Sentences with Keras
-    maxDataLenght = 30 
-    xTrain = sequence.pad_sequences(xTrain, maxlen=maxDataLenght) 
+    xTrain = sequence.pad_sequences(xTrain, maxlen=maxDataLenght)
     xTest = sequence.pad_sequences(xTest, maxlen=maxDataLenght)
+    xValidation = sequence.pad_sequences(xValidation, maxlen=maxDataLenght)
 
     # build model for split
-    # define your model here
+    model = lm.biLstmModel1(
+        embeddingMatrix=embeddingMatrix,
+        maxDataLenght=maxDataLenght,
+        embeddingVectorLength=EMBEDDING_VECTOR_LENGTH,
+        numAttributes=NUM_OF_ATTRIBUTES,
+        numNeurons=NUM_OF_NEURONS
+    )
+    # print(model.summary())
+    model.fit(xTrain, yTrain, validation_data=(xValidation, yValidation), epochs=10, batch_size=64, shuffle=True, verbose=0)
+    scores = model.evaluate(xTest, yTest, verbose=0)
+    print('+'*20)
+    for i in range(1,5):
+        print("%s : %.2f%%" % (model.metrics_names[i], scores[i]*100))
 
-    # split validation
-    # model.fit(xTrain, yTrain, validation_data=(xTest, yTest), epochs=10, batch_size=64)
-    # model.save('lstm_model.h5')
-    hst = model.fit(xTrain, yTrain, validation_data=(xTest, yTest), epochs=10, batch_size=64)
 
-    plt.style.use('classic')
-
-    print(np.mean(hst.history['acc']))
-    plt.title('Accuracy')
-    plt.plot(hst.history['acc'])
-    # plt.plot(hst.history['val_loss'], label='validation')
-    plt.legend()
-    plt.show()
-    plt.show()
-
-def createModel(NUM_OF_ATTRIBUTES, dataInput):
+def createModel(dataInput, embeddingMatrix, maxDataLenght):
     # split dataset for train and test
     train, test = train_test_split(dataInput, test_size=0.2)
     xTrain, yTrain = list(zip(*train))
@@ -176,17 +183,21 @@ def createModel(NUM_OF_ATTRIBUTES, dataInput):
 
 
     # pad Sentences with Keras
-    maxDataLenght = 500
-    xTrain = sequence.pad_sequences(xTrain, maxlen=maxDataLenght) 
+    xTrain = sequence.pad_sequences(xTrain, maxlen=maxDataLenght)
     xTest = sequence.pad_sequences(xTest, maxlen=maxDataLenght)
 
-    # build model for split
-    # define your model here
+    model = lm.biLstmModel3(
+        embeddingMatrix=embeddingMatrix,
+        maxDataLenght=maxDataLenght,
+        embeddingVectorLength=EMBEDDING_VECTOR_LENGTH,
+        numAttributes=NUM_OF_ATTRIBUTES,
+        numNeurons=NUM_OF_NEURONS
+    )
 
     # split validation
-    checkpointer = ModelCheckpoint(filepath='model.weights.best.hdf5', verbose = 1, save_best_only=True)
-    model.fit(xTrain, yTrain, validation_data=(xTest, yTest), epochs=10, batch_size=32, callbacks=[checkpointer])
-    # model.save('lstm_model.h5')
+    # checkpointer = ModelCheckpoint(filepath='model.weights.best.hdf5', verbose = 1, save_best_only=True)
+    model.fit(xTrain, yTrain, validation_data=(xTest, yTest), epochs=NUM_OF_EPOCHS, shuffle=True, batch_size=256)
+    model.save('model/bi-lstm3.h5')
 
 def main():
     # load dataset and store it to list
@@ -207,6 +218,7 @@ def main():
     logFile += 'Jumlah semua data : ' + str(len(negData) + len(posData)) + '\n'
 
     datas, labels = zip(*dataLabeled)
+    labels = to_categorical(labels)
 
     maxDataLenght = pp.getMaxPad(datas)
 
@@ -218,18 +230,18 @@ def main():
     dataLabeledInt = list(zip(dataInt, labels))
     embeddingMatrix = ce.createEmbeddingMatrix(modelPath, NUM_OF_ATTRIBUTES, corpus)
 
+    log.writeLog(logPath, 'log embedding vector', np.array2string(embeddingMatrix))
+
     start_time = time.time()
     print('Start cross validation...')
-
-    # 1 - Bidirectional LSTM 1 Layer
-    # 2 - Bidirectional LSTM 3 Layer
-    # 3 - LSTM 1 Layer
-    crossValidation(dataLabeledInt, embeddingMatrix, maxDataLenght)
+    # crossValidation(dataLabeledInt, embeddingMatrix, maxDataLenght)
+    createModel(dataLabeledInt, embeddingMatrix, maxDataLenght)
+    # splitValidation(dataLabeledInt, embeddingMatrix, maxDataLenght)
 
     finish_time = time.time()
 
-    logFile += 'Finished. Elapsed time: {}'.format(timedelta(seconds=finish_time-start_time))
-    log.writeLog(logPath, logName, logFile)
+    # logFile += 'Finished. Elapsed time: {}'.format(timedelta(seconds=finish_time-start_time))
+    # log.writeLog(logPath, logName, logFile)
 
 def testData():
     dataset = np.loadtxt('../../input/coba.csv', delimiter=",")

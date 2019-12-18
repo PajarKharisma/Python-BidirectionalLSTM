@@ -34,12 +34,9 @@ def biLstmModel1(embeddingMatrix, maxDataLenght, embeddingVectorLength, numAttri
     )
     model.add(Bidirectional(LSTM(numNeurons, return_sequences=False), merge_mode="sum"))
     model.add(Dropout(0.2))
-    model.add(Dense(1, activation='sigmoid', kernel_regularizer=regularizers.l2(0.001)))
-    model.compile(loss='binary_crossentropy', optimizer='adam', metrics=[
-        'accuracy',
-        km.binary_f1_score(),
-        km.binary_precision(),
-        km.binary_recall()
+    model.add(Dense(2, activation='softmax', kernel_regularizer=regularizers.l2(0.001)))
+    model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=[
+        'accuracy'
     ])
 
     return model
@@ -51,12 +48,12 @@ def hybridModel(embeddingMatrix, maxDataLenght, embeddingVectorLength, numAttrib
     model.add(Conv1D(64, 5, activation='relu'))
     model.add(MaxPooling1D(pool_size=4))
     model.add(Bidirectional(LSTM(numNeurons, return_sequences=False), merge_mode="sum"))
-    model.add(Dense(1, activation='sigmoid', kernel_regularizer=regularizers.l2(0.001)))
-    model.compile(loss='binary_crossentropy', optimizer='adam', metrics=[
+    model.add(Dense(2, activation='softmax', kernel_regularizer=regularizers.l2(0.001)))
+    model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=[
         'accuracy',
-        km.binary_f1_score(),
-        km.binary_precision(),
-        km.binary_recall()
+        km.categorical_f1_score(),
+        km.categorical_precision(),
+        km.categorical_recall()
     ])
 
     return model
@@ -68,12 +65,9 @@ def biLstmModel3(embeddingMatrix, maxDataLenght, embeddingVectorLength, numAttri
     model.add(Bidirectional(LSTM(numNeurons, return_sequences=True), merge_mode="sum"))
     model.add(Bidirectional(LSTM(numNeurons, return_sequences=False), merge_mode="sum"))
     model.add(Dropout(0.2))
-    model.add(Dense(1, activation='sigmoid', kernel_regularizer=regularizers.l2(0.001)))
-    model.compile(loss='binary_crossentropy', optimizer='adam', metrics=[
-        'accuracy',
-        km.binary_f1_score(),
-        km.binary_precision(),
-        km.binary_recall()
+    model.add(Dense(2, activation='softmax', kernel_regularizer=regularizers.l2(0.001)))
+    model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=[
+        'accuracy'
     ])
 
     return model
@@ -83,12 +77,9 @@ def lstmModel1(embeddingMatrix, maxDataLenght, embeddingVectorLength, numAttribu
     model.add(Embedding(input_dim=numAttributes, output_dim=embeddingVectorLength, weights=[embeddingMatrix], input_length=maxDataLenght, trainable=False))
     model.add(LSTM(numNeurons, return_sequences=False))
     model.add(Dropout(0.2))
-    model.add(Dense(1, activation='sigmoid', kernel_regularizer=regularizers.l2(0.001)))
-    model.compile(loss='binary_crossentropy', optimizer='adam', metrics=[
-        'accuracy',
-        km.binary_f1_score(),
-        km.binary_precision(),
-        km.binary_recall()
+    model.add(Dense(2, activation='softmax', kernel_regularizer=regularizers.l2(0.001)))
+    model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=[
+        'accuracy'
     ])
 
     return model

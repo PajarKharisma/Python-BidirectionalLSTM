@@ -1,20 +1,11 @@
-SVM Accuracy Score ->  63.64
-SVM Precission Score ->  100.0
-SVM Recall Score ->  63.64
-SVM F1 Measurement Score ->  77.78
-=============================================
-Naive Bayes Accuracy Score ->  63.16
-Naive Bayes Precission Score ->  100.0
-Naive Bayes Recall Score ->  63.16
-Naive Bayes F1 Measurement Score ->  77.42
-=============================================
-RFDT Accuracy Score ->  59.44
-RFDT Precission Score ->  100.0
-RFDT Recall Score ->  59.44
-RFDT F1 Measurement Score ->  74.56
-=============================================
-One hot encoding accuracy : 76.22%
-One hot encoding f1_score : 80.95%
-One hot encoding precision : 84.34%
-One hot encoding recall : 77.89%
-=============================================
+===================== AVG =====================
+Naive Bayes F1 Measurement Score ->  78.34
+SVM F1 Measurement Score ->  75.65
+RFDT F1 Measurement Score ->  80.33
+BLR F1 Measurement Score ->  75.11
+
+===================== SUM =====================
+Naive Bayes F1 Measurement Score ->  77.39
+SVM F1 Measurement Score ->  78.95
+RFDT F1 Measurement Score ->  73.08
+BLR F1 Measurement Score ->  72.99

@@ -19,7 +19,8 @@ class NumpyEncoder(json.JSONEncoder):
         return json.JSONEncoder.default(self, obj)
 
 class Vocabulary:
-    def __init__(self, maxFeatures, data, path):
+
+    def __init__(self, maxFeatures=0, data=None, path=''):
         self.__maxFeatures = maxFeatures
         self.__data = data
         self.__path = path
@@ -40,24 +41,27 @@ class Vocabulary:
     def transformSentencesToId(self):
         return self.__wordTokenizer.texts_to_sequences(self.__data)
 
-    # def transformSentencesToId(self, sentences, path):
-    #     with open(path) as json_file:
-    #         self.input_word_index = json.load(json_file)
+    def transformSentencesToId2(self, sentences, vocabLength, path):
+        with open(path) as json_file:
+            self.input_word_index = json.load(json_file)
 
-    #     vectors = []
-    #     for r in sentences:
-    #         words = r.split(" ")
-    #         vector = np.zeros(len(words))
+        vectors = []
+        for r in sentences:
+            words = r.split(" ")
+            vector = np.zeros(len(words))
 
-    #         for t, word in enumerate(words):
-    #             if word in self.input_word_index:
-    #                 vector[t] = self.input_word_index[word]
-    #             else:
-    #                 pass
+            for t, word in enumerate(words):
+                if word in self.input_word_index:
+                    val = self.input_word_index[word]
+                    if val < vocabLength:
+                        vector[t] = self.input_word_index[word]
+                else:
+                    pass
                 
-    #         vectors.append(vector)
+            vectors.append(vector)
             
-    #     return vectors
+        return vectors
+
 
     def transformSentencesToOneHot(self, dataInt):
         return [to_categorical(data) for data in dataInt]

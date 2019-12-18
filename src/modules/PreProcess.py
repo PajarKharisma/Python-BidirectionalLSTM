@@ -11,7 +11,7 @@ REPLACE_WITH_SPACE = re.compile("(<br\s*/><br\s*/>)|(\-)|(\/)|(\@)|(\\\)|(\.)|(\
 REPLACE_NO_SPACE = re.compile("(\#)|(\.)|(\;)|(\:)|(\!)|(\')|(\?)|(\,)|(\")|(\()|(\))|(\[)|(\])|(\@)|(\/)|(\\\)")
 LINK = re.compile("http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+")
 
-def getResult(reviews):
+def getResult(reviews, slangwordsPath='../../vocabulary/slangwords.csv'):
     reviews = [removeLink(line) for line in reviews]
 
     default_stop_words = nltk.corpus.stopwords.words('indonesian')
@@ -20,7 +20,7 @@ def getResult(reviews):
     factory = StemmerFactory()
     stemmer = factory.create_stemmer()
 
-    swCorpus = readSlangwords()
+    swCorpus = readSlangwords(slangwordsPath)
 
     reviews = [LINK.sub("", line.lower()) for line in reviews]
     reviews = [REPLACE_WITH_SPACE.sub(" ", line.lower()) for line in reviews]
@@ -89,7 +89,7 @@ def removeSlangwords(s, corpus):
     return " ".join(words)
         
 
-def readSlangwords():
+def readSlangwords(slangwordsPath):
     slangwordsCorpus = {}
     df = pd.read_csv(slangwordsPath, error_bad_lines=False)
     for index, (key, value) in enumerate(zip(df['key'], df['value'])):

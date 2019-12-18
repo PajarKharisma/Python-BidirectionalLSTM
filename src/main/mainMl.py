@@ -18,13 +18,13 @@ from datetime import timedelta
 from sklearn.model_selection import train_test_split
 from sklearn.model_selection import StratifiedKFold
 from sklearn import model_selection, naive_bayes, svm
-from sklearn.linear_model import LinearRegression
+from sklearn.linear_model import LinearRegression, LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 from keras.preprocessing import sequence
 sys.stderr = stderr
 
-inputPath = '../../input/data_input.csv'
+inputPath = '../../input/data_input-Copy.csv'
 modelPath = '../../vocabulary/w2v/CBOW/idwiki_word2vec_200.bin'
 
 def nbMethod(dataInput, maxDataLenght):
@@ -80,7 +80,7 @@ def rfdtMethod(dataInput, maxDataLenght):
     xTrain = sequence.pad_sequences(xTrain, maxlen=maxDataLenght) 
     xTest = sequence.pad_sequences(xTest, maxlen=maxDataLenght)
 
-    clf=RandomForestClassifier(n_estimators=100)
+    clf=RandomForestClassifier(n_estimators=200)
     clf.fit(xTrain, yTrain)
     prediction_rfdt = clf.predict(xTest)
 
@@ -101,7 +101,7 @@ def blrMethod(dataInput, maxDataLenght):
     xTrain = sequence.pad_sequences(xTrain, maxlen=maxDataLenght) 
     xTest = sequence.pad_sequences(xTest, maxlen=maxDataLenght)
 
-    blr = LinearRegression()  
+    blr = LogisticRegression()
     blr.fit(xTrain, yTrain)
     prediction_blr = blr.predict(xTest)
 
@@ -124,14 +124,14 @@ def main():
     datas, labels = zip(*dataLabeled)
     maxDataLenght = pp.getMaxPad(datas)
 
-    dataInt = ce.getEmbeddingValue(modelPath, datas)
+    dataInt = ce.getMeanEmbeddingValue(modelPath, datas)
     dataLabeledInt = list(zip(dataInt, labels))
 
     start_time = time.time()
     # nbMethod(dataLabeledInt, maxDataLenght)
     # svmMethod(dataLabeledInt, maxDataLenght)
-    # rfdtMethod(dataLabeledInt, maxDataLenght)
-    blrMethod(dataLabeledInt, maxDataLenght)
+    rfdtMethod(dataLabeledInt, maxDataLenght)
+    # blrMethod(dataLabeledInt, maxDataLenght)
 
     finish_time = time.time()
     print('Finished. Elapsed time: {}'.format(timedelta(seconds=finish_time-start_time)))

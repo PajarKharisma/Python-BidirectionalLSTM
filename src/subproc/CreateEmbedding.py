@@ -17,7 +17,7 @@ def createEmbeddingMatrix(modelPath, vocabLength, corpus):
 
     return embedding_matrix
 
-def getEmbeddingValue(modelPath, corpus):
+def getMeanEmbeddingValue(modelPath, corpus):
     model = KeyedVectors.load_word2vec_format(modelPath, binary=True)
     model.init_sims(replace=True)
     wordIndex = set(model.wv.vocab)
@@ -29,6 +29,24 @@ def getEmbeddingValue(modelPath, corpus):
             if s in wordIndex:
                 vector = model[s]
                 tmpVector.append(np.mean(vector))
+            else:
+                tmpVector.append(0)
+        outputVector.append(tmpVector)
+    
+    return outputVector
+
+def getSumEmbeddingValue(modelPath, corpus):
+    model = KeyedVectors.load_word2vec_format(modelPath, binary=True)
+    model.init_sims(replace=True)
+    wordIndex = set(model.wv.vocab)
+
+    outputVector = []
+    for sentences in corpus:
+        tmpVector = []
+        for s in sentences.split(" "):
+            if s in wordIndex:
+                vector = model[s]
+                tmpVector.append(abs(np.sum(vector)))
             else:
                 tmpVector.append(0)
         outputVector.append(tmpVector)
